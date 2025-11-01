@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 words = [
-    { "word": "Ephemeral", "definition": "Lasting for a very short time.", "difficulty": "Advanced" },
+    {"word": "Ephemeral", "definition": "Lasting for a very short time.", "difficulty": "Advanced" },
     { "word": "Ubiquitous", "definition": "Present, appearing, or found everywhere.", "difficulty": "Intermediate" },
     { "word": "Mellifluous", "definition": "(Of a voice or words) sweet or musical; pleasant to hear.", "difficulty": "Advanced" },
     { "word": "Serendipity", "definition": "The occurrence and development of events by chance in a happy or beneficial way.", "difficulty": "Intermediate" },
@@ -18,4 +18,11 @@ words = [
 
 @router.get("/word", response_model=WordResponse)
 def get_random_word():
-    ... 
+    if not words:
+        raise HTTPException(
+            status_code=404,
+            detail="No words available in database"
+        )
+    
+    randow_word = random.choice(words)
+    return randow_word
