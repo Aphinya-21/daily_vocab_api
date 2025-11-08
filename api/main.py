@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 from app.schemas import WordResponse
-from app.routers import words
+from app.routers import words , practice
+from app.database import engine, Base
+from fastapi.middleware.cors import CORSMiddleware
+
+Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -9,19 +13,23 @@ app = FastAPI(
     version="1.0.0",
     description="API for vocabulary practice and learning"
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Replace function get_random_word with router
 app.include_router(words.router, prefix="/api", tags=["words"])
+app.include_router(practice.router, prefix="/api", tags=["practice"])
 
 @app.get("/api/word", response_model=WordResponse)
 def get_random_word():
     """Get a random word"""
-    # TODO Write logic here....
-    #return WordResponse(
-     #   id=2,
-      #  word='book',
-       # definition='Reading material',
-        #difficulty_level='Beginner'
-#)
+  
 
     words = []
     if len(words) == 0:
